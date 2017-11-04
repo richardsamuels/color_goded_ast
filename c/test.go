@@ -10,7 +10,7 @@ type T struct {
 	noconflict int
 }
 
-func (t T) a() {
+func (t *T) a() {
 	pp.Println(t.field)
 }
 
@@ -31,8 +31,8 @@ func main() {
 	x := []T{}
 	pp.Println(x)
 
-	if _, ok := x.(T); ok {
-		pp.Println(x)
+	if d, ok := x.(T); ok {
+		pp.Println(d)
 	}
 
 	return dsfsdf

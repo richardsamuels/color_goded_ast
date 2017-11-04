@@ -8,7 +8,6 @@ import (
 	"go/ast"
 	"go/token"
 
-	"github.com/k0kubun/pp"
 	"github.com/richardsamuels/color_goded_ast/walker"
 )
 
@@ -39,7 +38,7 @@ func GoGetTokens(fname_c *C.char, c Callback) bool {
 	w := walker.New(fname, c.InsertHighlight, c.Error)
 
 	if w.Err == nil {
-		pp.Println(w.File)
+		//pp.Println(w.File)
 		//pp.Println(tree.Imports)
 		ast.Walk(w, w.File)
 	} else {
