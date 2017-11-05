@@ -127,25 +127,14 @@ func (w *Walker) onNode(n ast.Node) bool {
 		w.xexpr(v.Y)
 
 	case *ast.ImportSpec:
-		// TODO oh this is so wrong. Need to parse packages as well to
-		// determine their package names
-		if v.Name != nil {
-			w.Tokenise("Namespace", v.Name.Name, v.Name.NamePos)
-			w.packages[v.Name.Name] = true
-		} else {
-			w.Tokenise("String", v.Path.Value, v.Path.ValuePos)
-
-			pos := v.Path.ValuePos + token.Pos(1)
-			path := strings.Split(strings.TrimLeft(strings.TrimRight(v.Path.Value, "\""), "\""), "/")
-			last := len(path) - 1
-			for i := range path {
-				if i != last {
-					pos += token.Pos(len(path[i]) + 1)
-				}
+		s := strings.TrimRight(strings.TrimLeft(v.Path.Value, "\""), "\"")
+		if i, err := w.imp.Import(s); err == nil {
+			if v.Name == nil {
+				w.packages[i.Name()] = i
+			} else {
+				w.packages[v.Name.Name] = i
+				w.Tokenise("Namespace", v.Name.Name, v.Name.NamePos)
 			}
-
-			w.Tokenise("Namespace", path[last], pos)
-			w.packages[path[last]] = true
 		}
 
 	case *ast.CompositeLit:
