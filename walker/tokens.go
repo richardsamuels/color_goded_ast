@@ -108,6 +108,9 @@ func (w *Walker) onNode(n ast.Node) bool {
 			w.expr(&v.Lhs[i])
 		}
 		w.Tokenise("Operator", v.Tok.String(), v.TokPos)
+		for i := range v.Rhs {
+			w.expr(&v.Rhs[i])
+		}
 
 	case *ast.BasicLit:
 		switch v.Kind {
@@ -158,6 +161,8 @@ func (w *Walker) onNode(n ast.Node) bool {
 
 	case *ast.RangeStmt:
 		w.Tokenise("Operator", v.Tok.String(), v.TokPos)
+		w.expr(&v.Key)
+		w.expr(&v.Value)
 		w.expr(&v.X)
 
 	case *ast.ReturnStmt:
@@ -174,6 +179,11 @@ func (w *Walker) onNode(n ast.Node) bool {
 	case *ast.TypeAssertExpr:
 		w.expr(&v.X)
 		w.expr(&v.Type)
+
+	case *ast.IndexExpr:
+		w.expr(&v.X)
+		w.expr(&v.Index)
+
 	}
 
 	return true

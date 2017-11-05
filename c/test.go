@@ -9,9 +9,13 @@ type T struct {
 	pp         int
 	noconflict int
 }
+type t = int
 
 func (t *T) a() {
 	pp.Println(t.field)
+}
+func (t *t) a() {
+	pp.Println(t)
 }
 
 func main() {
@@ -34,6 +38,16 @@ func main() {
 	if d, ok := x.(T); ok {
 		pp.Println(d)
 	}
+
+	m := map[int]int{}
+	five := 5
+	m[five] = 5
+
+	for k, v := range m {
+		pp.Println(k)
+		pp.Println(v)
+	}
+	t.pp = five
 
 	return dsfsdf
 }
