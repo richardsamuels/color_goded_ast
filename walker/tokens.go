@@ -184,6 +184,9 @@ func (w *Walker) onNode(n ast.Node) bool {
 		w.expr(&v.X)
 		w.expr(&v.Index)
 
+	case *ast.SwitchStmt:
+		w.expr(&v.Tag)
+
 	}
 
 	return true
