@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/k0kubun/pp"
 )
 
@@ -15,7 +16,11 @@ func (t *T) a() {
 	pp.Println(t.field)
 }
 func (t *t) a() {
-	pp.Println(t)
+	x := 5
+	switch x {
+	default:
+		pp.Println(t)
+	}
 }
 
 func main() {
