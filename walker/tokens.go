@@ -84,7 +84,7 @@ func (w *Walker) onNode(n ast.Node) bool {
 
 		if v.Recv != nil {
 			for _, f := range v.Recv.List {
-				w.field(f)
+				w.field2(f)
 			}
 		}
 
@@ -184,6 +184,18 @@ func (w *Walker) onNode(n ast.Node) bool {
 	case *ast.SwitchStmt:
 		w.expr(&v.Tag)
 
+	case *ast.MapType:
+		switch k := v.Key.(type) {
+		case *ast.Ident:
+			w.Tokenise("Type", k.Name, k.NamePos)
+
+		}
+		switch k := v.Value.(type) {
+		case *ast.Ident:
+			w.Tokenise("Type", k.Name, k.NamePos)
+
+		}
+
 	}
 
 	return true
@@ -242,6 +254,25 @@ func (w *Walker) field(v *ast.Field) {
 			w.ident(i)
 		}
 
+	}
+}
+
+// TODO: fix this shame
+func (w *Walker) field2(v *ast.Field) {
+
+	for _, name := range v.Names {
+		w.onObject(name.Obj)
+	}
+	switch t := v.Type.(type) {
+	case *ast.Ident:
+		w.Tokenise("Type", t.Name, t.NamePos)
+	case *ast.StarExpr:
+		if i, ok := t.X.(*ast.Ident); ok {
+			w.ident(i)
+			if i.Obj == nil {
+				w.Tokenise("Type", i.Name, i.NamePos)
+			}
+		}
 	}
 }
 
