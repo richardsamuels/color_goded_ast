@@ -4,7 +4,13 @@ import (
 	"go/ast"
 	"go/token"
 	"strings"
+
+	"github.com/k0kubun/pp"
 )
+
+func ShutUp() {
+	pp.Println("skhjdfsjdlkfdjks")
+}
 
 func (w *Walker) onObject(o *ast.Object) {
 	if o == nil {
@@ -127,8 +133,10 @@ func (w *Walker) onNode(n ast.Node) bool {
 		w.xexpr(v.Y)
 
 	case *ast.ImportSpec:
+		// TODO: support vendored libs
 		s := strings.TrimRight(strings.TrimLeft(v.Path.Value, "\""), "\"")
-		if i, err := w.imp.Import(s); err == nil {
+		i, err := w.imp.Import(s)
+		if err == nil {
 			if v.Name == nil {
 				w.packages[i.Name()] = i
 			} else {
@@ -199,7 +207,14 @@ func (w *Walker) ident(v *ast.Ident) {
 	if v.Obj == nil {
 		if _, ok := w.packages[v.Name]; ok {
 			w.Tokenise("Namespace", v.Name, v.Pos())
+		} else {
+			for _, f := range w.Package.Files {
+				if o := f.Scope.Lookup(v.Name); o != nil {
+					w.Tokenise(objKindToGroup(o.Kind), v.Name, v.NamePos)
+				}
+			}
 		}
+
 	} else {
 		w.Tokenise(objKindToGroup(v.Obj.Kind), v.Name, v.NamePos)
 	}
@@ -236,9 +251,10 @@ func (w *Walker) selectorExpr(v *ast.SelectorExpr) {
 			w.Tokenise(objKindToGroup(x.Obj.Kind), x.Name, x.NamePos)
 		} else {
 			w.ident(x)
-
 		}
 	}
 
+	// TODO: properly resolve the Selectors; this marks everything as a
+	// member, even when more appropriate highlights exist
 	w.Tokenise("Member", v.Sel.Name, v.Sel.NamePos)
 }
