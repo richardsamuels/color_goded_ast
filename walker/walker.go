@@ -48,6 +48,7 @@ func New(fname string, insert func(group, name string, pos token.Position), errf
 			if file, ok := v.Files[fname]; ok {
 				w.File = file
 				w.Package = v
+				w.Tokenise("Namespace", file.Name.Name, file.Name.NamePos)
 				break
 			}
 		}
