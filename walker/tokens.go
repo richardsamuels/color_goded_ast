@@ -135,6 +135,7 @@ func (w *Walker) onNode(n ast.Node) bool {
 	case *ast.ImportSpec:
 		// TODO: support vendored libs
 		s := strings.TrimRight(strings.TrimLeft(v.Path.Value, "\""), "\"")
+		//p := os.Getenv("GOPATH") + "/src/"
 		i, err := w.imp.Import(s)
 		if err == nil {
 			if v.Name == nil {
@@ -148,6 +149,10 @@ func (w *Walker) onNode(n ast.Node) bool {
 	case *ast.CompositeLit:
 		if t, ok := v.Type.(*ast.Ident); ok {
 			w.Tokenise("Type", t.Name, t.NamePos)
+		}
+
+		for i := range v.Elts {
+			w.expr(&v.Elts[i])
 		}
 
 	case *ast.KeyValueExpr:
@@ -196,6 +201,8 @@ func (w *Walker) onNode(n ast.Node) bool {
 
 		}
 
+	case *ast.UnaryExpr:
+		w.expr(&v.X)
 	}
 
 	return true

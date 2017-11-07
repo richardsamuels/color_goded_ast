@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/k0kubun/pp"
@@ -21,6 +22,11 @@ func (t *t) a() {
 	default:
 		pp.Println(t)
 	}
+}
+
+func (t *t) b() (*bool, error) {
+	x := false
+	return &x, errors.New("potato")
 }
 
 func main() {
@@ -53,6 +59,10 @@ func main() {
 		pp.Println(v)
 	}
 	t.pp = five
+	t2 := &T{dsfsdf, dsfsdf}
+	pp.Println(t2)
+
+	t3 := []int{dsfsdf}
 
 	return dsfsdf
 }
