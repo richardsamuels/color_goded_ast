@@ -36,7 +36,7 @@ func New(fname string, insert func(group, name string, pos token.Position), errf
 		packages:  map[string]*types.Package{},
 		Insert:    insert,
 		Error:     errf,
-		imp:       importer.Default().(types.ImporterFrom),
+		imp:       importer.For("source", nil).(types.ImporterFrom),
 	}
 	w.dir = filepath.Dir(fname)
 

@@ -133,10 +133,8 @@ func (w *Walker) onNode(n ast.Node) bool {
 		w.xexpr(v.Y)
 
 	case *ast.ImportSpec:
-		// TODO: support vendored libs
 		s := strings.TrimRight(strings.TrimLeft(v.Path.Value, "\""), "\"")
-		//p := os.Getenv("GOPATH") + "/src/"
-		i, err := w.imp.Import(s)
+		i, err := w.imp.ImportFrom(s, w.dir, 0)
 		if err == nil {
 			if v.Name == nil {
 				w.packages[i.Name()] = i
