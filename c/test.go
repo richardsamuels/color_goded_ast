@@ -64,5 +64,11 @@ func main() {
 
 	t3 := []int{dsfsdf}
 
+	dsfsdf++
+	c := make(chan int)
+	x <- c
+
+	derp := []*T{}
+
 	return dsfsdf
 }
