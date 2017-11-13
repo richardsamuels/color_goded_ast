@@ -201,6 +201,22 @@ func (w *Walker) onNode(n ast.Node) bool {
 
 	case *ast.UnaryExpr:
 		w.expr(&v.X)
+
+	case *ast.ChanType:
+		w.Tokenise("Operator", "<-", v.Arrow)
+
+	case *ast.SendStmt:
+		w.expr(&v.Chan)
+		w.Tokenise("Operator", "<-", v.Arrow)
+		w.expr(&v.Value)
+
+	case *ast.IncDecStmt:
+		w.xexpr(v.X)
+		w.Tokenise("Operator", v.Tok.String(), v.TokPos)
+
+	case *ast.SliceExpr:
+		w.expr(&v.X)
+
 	}
 
 	return true
