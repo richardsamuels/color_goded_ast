@@ -179,6 +179,16 @@ func (w *Walker) onNode(n ast.Node) bool {
 	case *ast.TypeAssertExpr:
 		w.expr(&v.X)
 		w.expr(&v.Type)
+		if s, ok := v.Type.(*ast.StarExpr); ok {
+			if i, ok := s.X.(*ast.Ident); ok {
+				w.ident(i)
+			}
+		}
+
+	case *ast.StarExpr:
+		if i, ok := v.X.(*ast.Ident); ok {
+			w.ident(i)
+		}
 
 	case *ast.IndexExpr:
 		w.expr(&v.X)

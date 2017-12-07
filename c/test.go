@@ -70,5 +70,9 @@ func main() {
 
 	derp := []*T{}
 
+	var t *int = new(int)
+
+	pp.Println(*t)
+
 	return dsfsdf
 }
