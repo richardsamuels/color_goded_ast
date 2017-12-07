@@ -7,18 +7,32 @@ import "C"
 import (
 	"go/ast"
 	"go/token"
+	"sync"
 
 	"github.com/richardsamuels/color_goded_ast/walker"
 )
 
+var doWorkMutex sync.RWMutex = sync.RWMutex{}
+var doWork bool = true
+
 type Callback = C.struct_Callback
 
 func (c Callback) InsertHighlight(group, name string, pos token.Position) {
-	C.InsertHighlight(c, C.CString(group), C.int(pos.Line), C.int(pos.Column), C.CString(name))
+	doWorkMutex.RLock()
+	defer doWorkMutex.RUnlock()
+
+	if doWork {
+		C.InsertHighlight(c, C.CString(group), C.int(pos.Line), C.int(pos.Column), C.CString(name))
+	}
 }
 
 func (c Callback) Error(msg string) {
-	C.Errored(c, C.CString(msg))
+	doWorkMutex.RLock()
+	defer doWorkMutex.RUnlock()
+
+	if doWork {
+		C.Errored(c, C.CString(msg))
+	}
 }
 
 //export GoGetTokens
@@ -47,6 +61,14 @@ func GoGetTokens(fname_c *C.char, c Callback) bool {
 	}
 
 	return w.Err == nil
+}
+
+//export Exit
+func Exit() {
+	doWorkMutex.Lock()
+	defer doWorkMutex.Unlock()
+
+	doWork = false
 }
 
 func main() {}
