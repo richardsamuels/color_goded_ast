@@ -43,6 +43,7 @@ func New(fname string, insert func(group, name string, pos token.Position), errf
 	p, err := parser.ParseDir(w.fset, w.dir, nil, parser.AllErrors)
 	if err != nil {
 		w.Err = err
+
 	} else {
 		for _, v := range p {
 			if file, ok := v.Files[fname]; ok {
@@ -74,6 +75,7 @@ func (w *Walker) Tokenise(group, name string, rawPos token.Pos) {
 
 	if b, ok := w.uniquePos[rawPos]; ok && b {
 		return
+
 	} else {
 		w.uniquePos[rawPos] = true
 	}

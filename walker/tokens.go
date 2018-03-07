@@ -3,6 +3,7 @@ package walker
 import (
 	"go/ast"
 	"go/token"
+	"reflect"
 	"strings"
 
 	"github.com/k0kubun/pp"
@@ -40,6 +41,15 @@ func objKindToGroup(k ast.ObjKind) string {
 
 	case ast.Lbl:
 		hgroup = "TODO"
+	}
+	return hgroup
+}
+
+func reflectKindToGroup(k reflect.Kind) string {
+	hgroup := "Member"
+	switch k {
+	case reflect.Func:
+		hgroup = "Member"
 	}
 	return hgroup
 }
@@ -138,6 +148,7 @@ func (w *Walker) onNode(n ast.Node) bool {
 		if err == nil {
 			if v.Name == nil {
 				w.packages[i.Name()] = i
+
 			} else {
 				w.packages[v.Name.Name] = i
 				w.Tokenise("Namespace", v.Name.Name, v.Name.NamePos)
@@ -250,6 +261,7 @@ func (w *Walker) ident(v *ast.Ident) {
 	if v.Obj == nil {
 		if _, ok := w.packages[v.Name]; ok {
 			w.Tokenise("Namespace", v.Name, v.Pos())
+
 		} else {
 			for _, f := range w.Package.Files {
 				if o := f.Scope.Lookup(v.Name); o != nil {
@@ -280,6 +292,7 @@ func (w *Walker) field(v *ast.Field) {
 	switch t := v.Type.(type) {
 	case *ast.Ident:
 		w.Tokenise("Type", t.Name, t.NamePos)
+
 	case *ast.StarExpr:
 		if i, ok := t.X.(*ast.Ident); ok {
 			w.ident(i)
@@ -290,13 +303,13 @@ func (w *Walker) field(v *ast.Field) {
 
 // TODO: fix this shame
 func (w *Walker) field2(v *ast.Field) {
-
 	for _, name := range v.Names {
 		w.onObject(name.Obj)
 	}
 	switch t := v.Type.(type) {
 	case *ast.Ident:
 		w.Tokenise("Type", t.Name, t.NamePos)
+
 	case *ast.StarExpr:
 		if i, ok := t.X.(*ast.Ident); ok {
 			w.ident(i)
@@ -308,15 +321,32 @@ func (w *Walker) field2(v *ast.Field) {
 }
 
 func (w *Walker) selectorExpr(v *ast.SelectorExpr) {
+	//pp.Println(v)
 	if x, ok := v.X.(*ast.Ident); ok {
 		if x.Obj != nil {
 			w.Tokenise(objKindToGroup(x.Obj.Kind), x.Name, x.NamePos)
+
 		} else {
+			if p, ok := w.packages[x.Name]; ok {
+				w.Tokenise("Namespace", x.Name, x.Pos())
+				if o := p.Scope().Lookup(v.Sel.Name); o != nil {
+					t := reflect.TypeOf(o)
+
+					w.Tokenise(reflectKindToGroup(t.Kind()), v.Sel.Name, v.Sel.NamePos)
+				}
+				return
+			}
+
 			w.ident(x)
 		}
 	}
 
 	// TODO: properly resolve the Selectors; this marks everything as a
 	// member, even when more appropriate highlights exist
-	w.Tokenise("Member", v.Sel.Name, v.Sel.NamePos)
+	if v.Sel.Obj != nil {
+		w.Tokenise(objKindToGroup(v.Sel.Obj.Kind), v.Sel.Name, v.Sel.NamePos)
+
+	} else {
+		w.Tokenise("Member", v.Sel.Name, v.Sel.NamePos)
+	}
 }
