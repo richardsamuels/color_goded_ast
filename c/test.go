@@ -7,6 +7,8 @@ import (
 	"github.com/k0kubun/pp"
 )
 
+const Potato = 1
+
 type T struct {
 	pp         int
 	noconflict int
@@ -14,7 +16,7 @@ type T struct {
 type t = int
 
 func (t *T) a() {
-	pp.Println(t.field)
+	pp.Println(t.pp)
 }
 func (t *t) a() {
 	x := 5

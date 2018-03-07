@@ -13,3 +13,9 @@ func (t *T) test() {
 func (t t) a() {
 	pp.Println(t)
 }
+
+func New() *T {
+	return &T{
+		pp: Potato,
+	}
+}
