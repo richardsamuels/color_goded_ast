@@ -8,6 +8,7 @@ go:
   - master
 
 install:
+  - go get github.com/richardsamuels/color_goded_ast
   - cp .build/golang.h .
   - CGO_LDFLAGS_ALLOW='-Wl.*' go build -v .
 
