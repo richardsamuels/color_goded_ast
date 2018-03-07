@@ -1,0 +1,17 @@
+sudo: false
+language: go
+go:
+  - 1.7.x
+  - 1.8.x
+  - 1.9.x
+  - 1.10.x
+  - master
+
+install:
+  - cp .build/golang.h .
+  - CGO_LDFLAGS_ALLOW='-Wl.*' go build -v .
+
+matrix:
+  allow_failures:
+    - go: master
+  fast_finish: true
