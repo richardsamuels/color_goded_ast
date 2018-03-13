@@ -12,6 +12,7 @@ install:
   - go get github.com/k0kubun/pp
   - cd .build
   - CGO_LDFLAGS_ALLOW='-Wl.*' CGO_CFLAGS="-I$PWD" go build -v ..
+  - cd ..
 
 matrix:
   allow_failures:
