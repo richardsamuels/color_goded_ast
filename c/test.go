@@ -78,3 +78,7 @@ func main() {
 
 	return dsfsdf
 }
+
+func a(x ...int) {
+	pp.Println(x)
+}
