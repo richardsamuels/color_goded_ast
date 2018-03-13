@@ -1,4 +1,7 @@
 sudo: false
+os:
+  - osx
+  - linux
 language: go
 go:
   - 1.7.x
