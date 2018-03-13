@@ -10,6 +10,8 @@ go:
 
 install:
   - go get github.com/k0kubun/pp
+
+script:
   - cd .build
   - CGO_LDFLAGS_ALLOW='-Wl.*' CGO_CFLAGS="-I$PWD" go build -v ..
   - cd ..
