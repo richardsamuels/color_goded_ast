@@ -1,7 +1,7 @@
 package main
 
 // #cgo darwin LDFLAGS: -Wl,-U,_InsertHighlight,-U,_Errored
-// #cgo linux LDFLAGS: -Wl,-u,_InsertHighlight,-u,_Errored
+// #cgo linux LDFLAGS: -Wl,-u,InsertHighlight,-u,Errored
 // #include "golang.h"
 import "C"
 
