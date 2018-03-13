@@ -1,7 +1,7 @@
 package main
 
 // #cgo darwin LDFLAGS: -Wl,-U,_InsertHighlight,-U,_Errored
-// #cgo linux LDFLAGS: -Wl,--unresolved-symbols=report-all
+// #cgo linux LDFLAGS: -Wl,--warn-unresolved-symbols
 // #include "golang.h"
 import "C"
 
