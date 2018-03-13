@@ -238,6 +238,9 @@ func (w *Walker) onNode(n ast.Node) bool {
 	case *ast.SliceExpr:
 		w.expr(&v.X)
 
+	case *ast.Ellipsis:
+		w.expr(&v.Elt)
+
 	}
 
 	return true

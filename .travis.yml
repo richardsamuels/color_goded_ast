@@ -9,8 +9,8 @@ go:
 
 install:
   - go get github.com/k0kubun/pp
-  - cp .build/golang.h .
-  - CGO_LDFLAGS_ALLOW='-Wl.*' go build -v .
+  - cd .build
+  - CGO_LDFLAGS_ALLOW='-Wl.*' CGO_CFLAGS="-I$PWD" go build -v ..
 
 matrix:
   allow_failures:
